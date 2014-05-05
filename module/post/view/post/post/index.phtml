@@ -1,0 +1,43 @@
+<table class="table">
+	<thead>
+        <tr>
+			<th>Id</th>
+			<th>Title</th>
+			<th>Text</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach($this->posts as $post) {?>
+    	<tr>
+    		<td><?=$post->id ?></td>
+    		<td><?=$post->title ?></td>
+    		<td><?=$post->text ?></td>
+            <td class="delete">Delete</td>
+            <td><a href="<?php echo $this->url('post', array('action' => 'edit', 'id' => $post->id)); ?>">Update</a></td>
+    	</tr>
+	<?php } ?>
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready(function (){
+        $('.delete').on('click', function(){
+            var row = $(this).parent();
+            var id = $(this).parent().children(':first').text();
+            $.ajax({
+                type: "POST",
+                url: "/post/delete",
+                data: {"id": id},
+                cache: false,
+                success: function(response){
+                    if (response && response.status === 'ok') {
+                        row.remove();
+                    }
+                }
+            });
+        });
+    });
+</script>

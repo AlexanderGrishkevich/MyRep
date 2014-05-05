@@ -1,0 +1,24 @@
+<?php
+	$form = $this->form;
+	$form->prepare();
+
+	echo $this->form()->openTag($form);
+?>
+
+	<?php
+		echo $this->formElement($form->get('title'));
+		echo $this->formElementErrors($form->get('title'));
+	?>
+
+	<?php
+		echo $this->formElement($form->get('text'));
+		echo $this->formElementErrors($form->get('text'));
+	?>
+
+	<?php
+		echo $this->formElement($form->get('submit'));
+		echo $this->formElementErrors($form->get('submit'));
+	?>
+
+
+<?php echo $this->form()->closeTag() ?>
