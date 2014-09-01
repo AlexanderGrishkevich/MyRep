@@ -5,10 +5,25 @@ class UsersController < ApplicationController
   # GET /users.json
   def index
     @message = params[:q]
-    if @message
-      @users = User.where(:name => @message)
+    @oder_by = params[:order_by]
+    @order = params[:order]
+
+    @url = '?q=' + @message.to_s + '&order_by' + @oder_by.to_s + '&order' + @order.to_s
+
+    if @order_by == nil
+      @order_by = 'id'
+    end
+
+    if @order != 'ASC'
+      @order = 'ASC'
     else
-      @users = User.all
+      @order = 'DESC'
+    end
+
+    if @message
+      @users = User.where("name LIKE '%#{@message}%'").order(@oder_by.to_s + ' ' + params[:order].to_s).all
+    else
+      @users = User.order(@oder_by.to_s + ' ' + params[:order].to_s).all
     end
   end
 
@@ -26,18 +41,40 @@ class UsersController < ApplicationController
   def edit
   end
 
+
+  require 'timeout'
   # POST /users
   # POST /users.json
   def create
     @user = User.new(user_params)
 
     respond_to do |format|
-      if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
+      if @user.url =~ URI::regexp
+        begin
+          status = Timeout::timeout(5) {
+
+            uri = URI.parse(@user.url)
+            http = Net::HTTP.new(uri.host, uri.port)  
+            code = http.head(uri.request_uri).code
+
+            if code != '200' 
+              format.html { render :new, :locals => {:notice => "Error: Bad code from server "}}
+            else
+              if @user.save
+                format.html { redirect_to @user, notice: 'User was successfully created.' }
+              else
+                format.html { render :new }
+              end
+            end
+        
+          }
+        rescue Timeout::Error
+          http.finish
+          format.html { render :new, :locals => {:notice => 'That took too long, exiting...' }} 
+        end
+
       else
-        format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.html { render :new, :locals => {:notice => "Error: Wrong URL"}}
       end
     end
   end
@@ -45,13 +82,32 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
+
     respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user }
+      if params[:user][:url] =~ URI::regexp
+        begin
+          status = Timeout::timeout(5) {
+
+            uri = URI.parse(params[:user][:url])
+            http = Net::HTTP.new(uri.host, uri.port)  
+            code = http.head(uri.request_uri).code
+
+            if code != '200' 
+              format.html { render :new, :locals => {:notice => "Error: Bad code from server "}}
+            else
+              if @user.save
+                format.html { redirect_to @user, notice: 'User was successfully created.' }
+              else
+                format.html { render :new }
+              end
+            end
+          }
+        rescue Timeout::Error
+          http.finish
+          format.html { render :new, :locals => {:notice => 'That took too long, exiting...' }} 
+        end
       else
-        format.html { render :edit }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.html { render :new, :locals => {:notice => "Error: Wrong URL"}}
       end
     end
   end
@@ -61,8 +117,7 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     respond_to do |format|
-      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
-      format.json { head :no_content }
+      format.html { redirect_to :back, notice: 'User was successfully deleted.' }
     end
   end
 
@@ -74,6 +129,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:name)
+      params.require(:user).permit(:name, :url)
     end
 end

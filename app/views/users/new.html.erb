@@ -1,5 +1,9 @@
 <h1>New user</h1>
 
+<p id="error"><%= notice %></p>
+
 <%= render 'form' %>
 
-<%= link_to 'Back', users_path %>
+<div class="button">
+  <a href="<%= users_path %>">Back</a>
+</div>

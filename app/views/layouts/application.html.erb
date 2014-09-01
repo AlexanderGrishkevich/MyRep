@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Hello</title>
+  <title>Ruby first app</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <%= favicon_link_tag 'favicon.ico' %>
 </head>
-<body>
+<body class="<%= controller_name %>">
+  <div id="wrapper">
 
-<%= yield %>
-
+    <%= yield %>
+    
+    <div class="back-to-home button">
+      <a href="/">Back to the main</a>
+    </div>
+  </div>
 </body>
 </html>

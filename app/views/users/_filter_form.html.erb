@@ -1,0 +1,5 @@
+<%= form_tag("/users", method: "get", class: "filter-form") do %>
+  <%= label_tag(:q, "Filter by name:") %>
+  <%= text_field_tag(:q) %>
+  <%= submit_tag "Apply", class: "submit" %>
+<% end %>

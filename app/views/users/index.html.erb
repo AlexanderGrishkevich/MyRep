@@ -1,28 +1,30 @@
-<h1>Listing users</h1>
-<%= form_tag("/users", method: "get") do %>
-  <%= label_tag(:q, "Filter by name:") %>
-  <%= text_field_tag(:q) %>
-  <%= submit_tag("Apply") %>
-<% end %>
-<table>
+<h1 class="lable">Show users</h1>
+<%= render 'filter_form' %>
+<table class="users-table">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Created at</th>
-      <th>Action</th>
+      <th><%=  link_to 'Name', users_path + '?q=' + @message.to_s + '&order_by=name&order=' + @order.to_s %></th>
+      <th><%= link_to 'Created at', users_path + '?q=' + @message.to_s + '&order_by=created_at&order=' + @order.to_s %></th>
+      <th>Actions</th>
     </tr>
   </thead>
 
   <tbody>
     <% @users.each do |user| %>
-      <tr>
+      <tr class="users-tr">
         <td><%= user.name %></td>
         <td><%= user.created_at.strftime("%d/%m/%Y %H:%M") %></td>
-        <td><%= link_to 'Remove', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td>
+          <%= link_to 'Edit', edit_user_path(user), method: :GET %>,
+          <%= link_to 'Remove', user, method: :delete, data: { confirm: 'Are you sure?' } %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<p id="notice"><%= notice %></p>
+<div class="button">
+  <a href="<%= new_user_path %>">New User</a>
+</div>
 
-<br>
-<%= link_to 'New User', new_user_path %>
+
