@@ -93,21 +93,21 @@ class UsersController < ApplicationController
             code = http.head(uri.request_uri).code
 
             if code != '200' 
-              format.html { render :new, :locals => {:notice => "Error: Bad code from server "}}
+              format.html { render :edit, :locals => {:notice => "Error: Bad code from server "}}
             else
-              if @user.save
-                format.html { redirect_to @user, notice: 'User was successfully created.' }
+              if @user.update(user_params)
+                format.html { redirect_to @user, notice: 'User was successfully updated.' }
               else
-                format.html { render :new }
+                format.html { render :edit }
               end
             end
           }
         rescue Timeout::Error
           http.finish
-          format.html { render :new, :locals => {:notice => 'That took too long, exiting...' }} 
+          format.html { render :edit, :locals => {:notice => 'That took too long, exiting...' }} 
         end
       else
-        format.html { render :new, :locals => {:notice => "Error: Wrong URL"}}
+        format.html { render :edit, :locals => {:notice => "Error: Wrong URL"}}
       end
     end
   end
