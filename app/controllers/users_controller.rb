@@ -69,7 +69,6 @@ class UsersController < ApplicationController
         
           }
         rescue Timeout::Error
-          http.finish
           format.html { render :new, :locals => {:notice => 'That took too long, exiting...' }} 
         end
 
@@ -103,7 +102,6 @@ class UsersController < ApplicationController
             end
           }
         rescue Timeout::Error
-          http.finish
           format.html { render :edit, :locals => {:notice => 'That took too long, exiting...' }} 
         end
       else
