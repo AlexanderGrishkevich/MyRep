@@ -3,8 +3,8 @@
 <table class="users-table">
   <thead>
     <tr>
-      <th><%=  link_to 'Name', users_path + '?q=' + @message.to_s + '&order_by=name&order=' + @order.to_s %></th>
-      <th><%= link_to 'Created at', users_path + '?q=' + @message.to_s + '&order_by=created_at&order=' + @order.to_s %></th>
+      <th><%=  link_to 'Name', :controller => 'users', :q => @message.to_s, :order_by => 'name', :order => @order.to_s %></th>
+      <th><%= link_to 'Created at', :controller => 'users', :q => @message.to_s, :order_by => 'created_at', :order => @order.to_s %></th>
       <th>Actions</th>
     </tr>
   </thead>
