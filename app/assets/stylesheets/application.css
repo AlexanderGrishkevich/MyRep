@@ -45,10 +45,18 @@ body {
 	font-size: 25px;
 }
 
+.reg_link {
+	margin-bottom: 5px; 
+}
+
 .links {
 	width: 240px;
 	margin: 20px auto;
 	font-size: 20px;
+}
+
+.links a {
+	width: 240px;
 }
 
 a:hover{
@@ -175,4 +183,9 @@ body.index .back-to-home {
 
 #error {
 	color: red;
+}
+
+.links-title {
+	font-weight: bold;
+	margin-bottom: 10px; 
 }
